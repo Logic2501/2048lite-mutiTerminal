@@ -4,6 +4,7 @@ export function createRenderer(boardEl, overlayEl) {
   const tileNodes = new Map();
   let cellPositions = [];
   let measuredBoardWidth = 0;
+  let measuredTileSize = 72;
 
   const ensureCells = () => {
     const existing = boardEl.querySelectorAll(".cell");
@@ -28,6 +29,7 @@ export function createRenderer(boardEl, overlayEl) {
       const rect = cell.getBoundingClientRect();
       return { x: rect.left - boardRect.left, y: rect.top - boardRect.top };
     });
+    measuredTileSize = cells[0].getBoundingClientRect().width || measuredTileSize;
     measuredBoardWidth = boardRect.width;
     return true;
   };
@@ -66,13 +68,13 @@ export function createRenderer(boardEl, overlayEl) {
     return `hsl(34, 20%, ${light}%)`;
   };
 
-  const fontSizeForValue = (value) => {
-    const base = parseFloat(getComputedStyle(boardEl).getPropertyValue("--tile-font")) || 20;
-    const text = formatValue(value);
-    if (text.length <= 3) return `${base}px`;
-    if (text.length <= 4) return `${base * 0.9}px`;
-    if (text.length <= 5) return `${base * 0.8}px`;
-    return `${base * 0.7}px`;
+  const fontSizeForValue = (display) => {
+    const base = Math.max(14, Math.min(34, measuredTileSize * 0.36));
+    const len = display.isPow ? String(display.exp).length + 1 : display.text.length;
+    if (len <= 2) return `${base}px`;
+    if (len <= 3) return `${base * 0.88}px`;
+    if (len <= 4) return `${base * 0.78}px`;
+    return `${base * 0.68}px`;
   };
 
   const renderTiles = (state) => {
@@ -94,7 +96,7 @@ export function createRenderer(boardEl, overlayEl) {
         node.textContent = display.text;
       }
       node.style.background = colorForValue(tile.value);
-      node.style.fontSize = fontSizeForValue(tile.value);
+      node.style.fontSize = fontSizeForValue(display);
 
       const { x, y } = getTranslate(tile.cell);
       node.style.setProperty("--x", `${x}px`);

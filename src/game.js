@@ -1,6 +1,5 @@
 import {
   createEmptyState,
-  createTile,
   addRandomTile,
   moveTiles,
   canMove,

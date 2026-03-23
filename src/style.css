@@ -8,7 +8,6 @@
   --gap: 10px;
   --radius: 10px;
   --tile-size: 72px;
-  --tile-font: 20px;
   --anim: 120ms;
 }
 
@@ -164,7 +163,7 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: var(--tile-font);
+  font-size: 20px;
   color: #1d1d1d;
   transform: translate3d(var(--x, 0), var(--y, 0), 0) scale(1);
   transition: transform var(--anim) ease;
