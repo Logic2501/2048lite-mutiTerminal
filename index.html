@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
-    <meta name="app-version" content="1.0.14" />
+    <meta name="app-version" content="1.0.17" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>2048 Lite</title>
@@ -611,9 +611,9 @@ function createRenderer(boardEl, overlayEl) {
       node.style.setProperty("--x", `${x}px`);
       node.style.setProperty("--y", `${y}px`);
 
-      if (tile.isNew) node.classList.add("new");
-      if (tile.isNew) node.classList.add("no-anim");
-      if (tile.mergedFrom) node.classList.add("merge");
+      node.classList.toggle("new", Boolean(tile.isNew));
+      node.classList.toggle("no-anim", Boolean(tile.isNew));
+      node.classList.toggle("merge", Boolean(tile.mergedFrom));
     });
 
     tileNodes.forEach((node, id) => {
@@ -803,6 +803,13 @@ function createGame(renderer, onBestUpdate) {
     toRemove.forEach((id) => state.tiles.delete(id));
   };
 
+  const clearTransientState = () => {
+    state.tiles.forEach((tile) => {
+      tile.isNew = false;
+      tile.mergedFrom = null;
+    });
+  };
+
   const initBoard = () => {
     state.boardCells.fill(null);
     state.tiles.clear();
@@ -852,6 +859,7 @@ function createGame(renderer, onBestUpdate) {
     renderAll();
     runAnimation(state, ANIM_MS, () => {
       pruneMergedOut();
+      clearTransientState();
       renderer.clearTransient();
       renderer.render(state);
       if (state.isGameOver) clearCurrentGame();
