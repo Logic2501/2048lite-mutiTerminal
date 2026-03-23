@@ -102,9 +102,12 @@ export function createRenderer(boardEl, overlayEl) {
       node.style.setProperty("--x", `${x}px`);
       node.style.setProperty("--y", `${y}px`);
 
-      if (tile.isNew) node.classList.add("new");
-      if (tile.isNew) node.classList.add("no-anim");
-      if (tile.mergedFrom) node.classList.add("merge");
+      node.classList.remove("new");
+      node.classList.remove("merge");
+      node.classList.remove("no-anim");
+      if (tile.isNew()) node.classList.add("new");
+      if (tile.isNew()) node.classList.add("no-anim");
+      if (tile.isMerged()) node.classList.add("merge");
     });
 
     tileNodes.forEach((node, id) => {
